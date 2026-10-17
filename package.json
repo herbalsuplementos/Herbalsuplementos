@@ -1,0 +1,32 @@
+{
+  "name": "herbal-suplementos",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Site institucional e painel administrativo da Herbal Suplementos",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "create-admin": "node scripts/create-admin.js",
+    "seed": "node scripts/seed.js",
+    "cleanup": "node scripts/cleanup.js",
+    "cleanup:dry": "node scripts/cleanup.js --dry-run",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "connect-mongo": "^5.1.0",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "express-session": "^1.18.1",
+    "helmet": "^8.0.0",
+    "mongoose": "^8.9.5",
+    "multer": "^2.0.2",
+    "sharp": "^0.35.5",
+    "zod": "^3.24.1"
+  }
+}

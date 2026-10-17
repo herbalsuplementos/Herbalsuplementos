@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#12503a">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Painel administrativo | Herbal Suplementos</title>
+  <link rel="stylesheet" href="/admin/admin.css">
+  <script src="/admin/admin.js" defer></script>
+</head>
+<body class="admin-page">
+  <main class="login-screen" id="login-screen" hidden>
+    <section class="login-card" aria-labelledby="login-title">
+      <a class="login-brand" href="/">Herbal <span>SUPLEMENTOS</span></a>
+      <p class="eyebrow">Área restrita</p>
+      <h1 id="login-title">Acesse seu painel</h1>
+      <p class="login-intro">Entre para atualizar os produtos e as informações da loja.</p>
+      <form id="login-form">
+        <label for="login-username">Usuário</label>
+        <input id="login-username" name="username" type="text" autocomplete="username" required maxlength="32" autocapitalize="none">
+        <label for="login-password">Senha</label>
+        <div class="password-wrap">
+          <input id="login-password" name="password" type="password" autocomplete="current-password" required>
+          <button id="toggle-password" type="button" aria-label="Mostrar senha">Mostrar</button>
+        </div>
+        <p class="form-message" id="login-error" role="alert"></p>
+        <button class="primary-button full-width" id="login-submit" type="submit">Entrar no painel</button>
+      </form>
+      <a class="back-link" href="/">← Voltar ao site</a>
+    </section>
+  </main>
+
+  <div class="admin-layout" id="admin-layout" hidden>
+    <aside class="sidebar" id="sidebar">
+      <a class="side-brand" href="/">Herbal <span>SUPLEMENTOS</span></a>
+      <p class="side-label">ESPAÇO DA LOJA</p>
+      <nav class="side-nav" aria-label="Menu administrativo">
+        <button type="button" data-view="dashboard" class="nav-item active"><span>▦</span> Visão geral</button>
+        <button type="button" data-view="products" class="nav-item"><span>◇</span> Produtos</button>
+        <button type="button" data-view="categories" class="nav-item"><span>▤</span> Categorias</button>
+        <button type="button" data-view="orders" class="nav-item"><span>✓</span> Pedidos</button>
+        <button type="button" data-view="reports" class="nav-item"><span>▥</span> Relatórios</button>
+        <button type="button" data-view="site" class="nav-item"><span>◎</span> Conteúdo do site</button>
+        <button type="button" data-view="maintenance" class="nav-item"><span>♻</span> Manutenção</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <a href="/" target="_blank" rel="noopener noreferrer">Ver site ↗</a>
+        <button type="button" id="logout-button">Sair da conta</button>
+      </div>
+    </aside>
+
+    <div class="admin-main">
+      <header class="admin-topbar">
+        <button class="mobile-menu" id="mobile-menu" type="button" aria-label="Abrir menu" aria-expanded="false">☰</button>
+        <div><span class="breadcrumb">Herbal Suplementos</span><span class="breadcrumb-divider">/</span><strong id="page-title">Visão geral</strong></div>
+        <span class="secure-badge">Sessão protegida</span>
+      </header>
+      <div class="admin-content">
+        <p id="notice" class="notice" role="status" aria-live="polite" hidden></p>
+
+        <section class="view-panel" id="view-dashboard">
+          <div class="view-heading">
+            <div><p class="eyebrow">Bem-vinda(o) ao painel</p><h1>Visão geral</h1><p>Gerencie as informações que aparecem para seus clientes.</p></div>
+            <button class="primary-button" type="button" data-go="products" data-action="new-product">＋ Adicionar produto</button>
+          </div>
+          <div class="stats-grid">
+            <article class="stat-card"><span>Produtos cadastrados</span><strong id="stat-products">—</strong></article>
+            <article class="stat-card"><span>Categorias</span><strong id="stat-categories">—</strong></article>
+            <article class="stat-card"><span>Produtos em destaque</span><strong id="stat-featured">—</strong></article>
+          </div>
+          <div class="quick-grid">
+            <button type="button" class="quick-card" data-go="products" data-action="new-product"><span class="quick-icon">＋</span><strong>Cadastrar produto</strong><span>Inclua descrição, categoria, preço e foto.</span></button>
+            <button type="button" class="quick-card" data-go="site"><span class="quick-icon">▧</span><strong>Trocar fotos da página inicial</strong><span>Atualize a imagem principal e a seção sobre.</span></button>
+            <button type="button" class="quick-card" data-go="site"><span class="quick-icon">⌂</span><strong>Editar informações da loja</strong><span>WhatsApp, endereço, redes sociais e horários.</span></button>
+          </div>
+        </section>
+
+        <section class="view-panel" id="view-products" hidden>
+          <div class="view-heading"><div><p class="eyebrow">Seu catálogo</p><h1>Produtos</h1><p>Cadastre, atualize e organize o que aparece no site.</p></div><button class="primary-button" type="button" id="new-product-button">＋ Adicionar produto</button></div>
+          <div class="toolbar">
+            <label class="admin-search"><span class="sr-only">Pesquisar produtos</span><input id="product-filter-search" type="search" placeholder="Buscar produto..."></label>
+            <select id="product-filter-category" aria-label="Filtrar por categoria"><option value="">Todas as categorias</option></select>
+            <select id="product-filter-active" aria-label="Filtrar por situação"><option value="">Todas as situações</option><option value="true">Ativos</option><option value="false">Inativos</option></select>
+          </div>
+          <div class="table-wrap"><table><thead><tr><th>Produto</th><th>Categoria</th><th>Preço</th><th>Situação</th><th>Ações</th></tr></thead><tbody id="products-table"></tbody></table></div>
+          <p class="empty-admin" id="products-empty" hidden>Nenhum produto cadastrado para este filtro.</p>
+        </section>
+
+        <section class="view-panel" id="view-categories" hidden>
+          <div class="view-heading"><div><p class="eyebrow">Organize o catálogo</p><h1>Categorias</h1><p>Produtos associados precisam ser movidos antes de excluir uma categoria.</p></div></div>
+          <form id="category-form" class="inline-form">
+            <input type="hidden" id="category-id">
+            <label>Nome da categoria<input id="category-name" required maxlength="80" placeholder="Ex.: Chás e infusões"></label>
+            <label>Ordem<input id="category-order" type="number" min="0" max="10000" value="0"></label>
+            <button class="primary-button" type="submit" id="category-save">Adicionar categoria</button>
+            <button class="secondary-button" type="button" id="category-cancel" hidden>Cancelar edição</button>
+          </form>
+          <div class="category-list" id="category-list"></div>
+          <p class="empty-admin" id="categories-empty" hidden>Nenhuma categoria cadastrada.</p>
+        </section>
+
+        <section class="view-panel" id="view-orders" hidden>
+          <div class="view-heading"><div><p class="eyebrow">Vendas pelo WhatsApp</p><h1>Pedidos</h1><p>Digite o código que o cliente informa na loja para localizar e confirmar a entrega.</p></div></div>
+          <form id="order-lookup-form" class="lookup-card">
+            <label for="order-code">Código do pedido</label>
+            <div class="lookup-row">
+              <input id="order-code" autocomplete="off" maxlength="12" placeholder="HB-XXXX-XXXX" required>
+              <button class="primary-button" type="submit">Validar pedido</button>
+            </div>
+          </form>
+          <div id="order-result" class="order-result" hidden></div>
+          <div class="toolbar">
+            <select id="order-filter-status" aria-label="Filtrar pedidos"><option value="">Todos os pedidos</option><option value="pending">Pendentes</option><option value="delivered">Entregues</option><option value="cancelled">Cancelados</option></select>
+          </div>
+          <div class="table-wrap"><table><thead><tr><th>Código</th><th>Data</th><th>Itens</th><th>Total</th><th>Situação</th><th>Ações</th></tr></thead><tbody id="orders-table"></tbody></table></div>
+          <p class="empty-admin" id="orders-empty" hidden>Nenhum pedido encontrado.</p>
+        </section>
+
+        <section class="view-panel" id="view-reports" hidden>
+          <div class="view-heading"><div><p class="eyebrow">Acompanhe a loja</p><h1>Relatórios</h1><p>Receita considera apenas pedidos entregues.</p></div>
+            <select id="report-period" aria-label="Período"><option value="today">Hoje</option><option value="7d">Últimos 7 dias</option><option value="30d" selected>Últimos 30 dias</option><option value="90d">Últimos 90 dias</option><option value="all">Todo o período</option></select>
+          </div>
+          <div class="stats-grid stats-four">
+            <article class="stat-card"><span>Receita (entregues)</span><strong id="rep-revenue">—</strong></article>
+            <article class="stat-card"><span>Pedidos no período</span><strong id="rep-orders">—</strong></article>
+            <article class="stat-card"><span>Ticket médio</span><strong id="rep-ticket">—</strong></article>
+            <article class="stat-card"><span>Pendentes</span><strong id="rep-pending">—</strong></article>
+          </div>
+          <div class="report-grid">
+            <article class="report-card"><h2>Pedidos por dia</h2><div class="bars" id="rep-daily"></div></article>
+            <article class="report-card"><h2>Produtos mais vendidos</h2><div id="rep-top"></div></article>
+            <article class="report-card"><h2>Receita por categoria</h2><div id="rep-categories"></div></article>
+          </div>
+        </section>
+
+        <section class="view-panel" id="view-site" hidden>
+          <div class="view-heading"><div><p class="eyebrow">Sua marca, suas informações</p><h1>Conteúdo do site</h1><p>Edite sua vitrine e acompanhe uma prévia antes de publicar.</p></div></div>
+          <form id="settings-form" class="editor-form">
+            <fieldset><legend>Apresentação</legend>
+              <label>Mensagem no topo<input name="topbar" maxlength="180"></label>
+              <label>Título principal<input name="heroTitle" required maxlength="160"></label>
+              <label>Texto principal<textarea name="heroText" rows="3" maxlength="1000"></textarea></label>
+              <div class="image-editor-grid">
+                <div class="image-field">
+                  <span class="field-label">Imagem da vitrine</span>
+                  <label class="image-picker" for="hero-image-input"><span class="picker-icon" aria-hidden="true">＋</span><strong>Escolher uma imagem</strong><span>PNG, JPG ou WebP · até 5 MB</span><input id="hero-image-input" name="heroImage" type="file" accept="image/png,image/jpeg,image/webp"></label>
+                  <p class="image-file-name" id="hero-image-file-name">Nenhuma imagem nova selecionada</p>
+                  <label class="check-row"><input name="removeHeroImage" type="checkbox"> Remover a imagem atual</label>
+                </div>
+                <article class="site-preview-card hero-site-preview" aria-label="Prévia da imagem e do texto da vitrine">
+                  <div class="preview-card-heading"><span>PRÉVIA DA VITRINE</span><span class="preview-live"><i></i> Ao vivo</span></div>
+                  <div class="preview-hero-canvas"><img class="image-preview" id="hero-image-preview" alt="Prévia da imagem principal" hidden><span class="preview-placeholder">Sua imagem aparece aqui</span><div class="preview-hero-copy"><small>HERBAL SUPLEMENTOS</small><strong data-preview-text="heroTitle">Mais natureza no seu dia a dia</strong><span data-preview-text="heroText">Encontre produtos naturais para a sua rotina.</span></div></div>
+                  <p class="preview-caption">A imagem e os textos acompanham suas alterações. Nada será publicado até você salvar.</p>
+                </article>
+              </div>
+            </fieldset>
+            <fieldset><legend>Sobre a loja</legend>
+              <label>Título da seção<input name="aboutTitle" maxlength="120"></label>
+              <label>Texto de apresentação<textarea name="aboutText" rows="4" maxlength="2000"></textarea></label>
+              <div class="image-editor-grid">
+                <div class="image-field">
+                  <span class="field-label">Imagem institucional</span>
+                  <label class="image-picker" for="about-image-input"><span class="picker-icon" aria-hidden="true">＋</span><strong>Escolher uma imagem</strong><span>PNG, JPG ou WebP · até 5 MB</span><input id="about-image-input" name="aboutImage" type="file" accept="image/png,image/jpeg,image/webp"></label>
+                  <p class="image-file-name" id="about-image-file-name">Nenhuma imagem nova selecionada</p>
+                  <label class="check-row"><input name="removeAboutImage" type="checkbox"> Remover a imagem atual</label>
+                </div>
+                <article class="site-preview-card about-site-preview" aria-label="Prévia da seção sobre a loja">
+                  <div class="preview-card-heading"><span>PRÉVIA DA SEÇÃO SOBRE</span><span class="preview-live"><i></i> Ao vivo</span></div>
+                  <div class="preview-about-canvas"><div class="preview-about-copy"><small>QUEM SOMOS</small><strong data-preview-text="aboutTitle">Cuidado natural, atendimento próximo</strong><span data-preview-text="aboutText">Conheça a Herbal Suplementos e converse com a nossa equipe.</span></div><div class="preview-about-image"><img class="image-preview" id="about-image-preview" alt="Prévia da imagem institucional" hidden><span class="preview-placeholder">Sua imagem aparece aqui</span></div></div>
+                  <p class="preview-caption">A imagem e os textos acompanham suas alterações. Nada será publicado até você salvar.</p>
+                </article>
+              </div>
+            </fieldset>
+            <fieldset><legend>Contato e localização</legend>
+              <label>WhatsApp (somente DDI, DDD e número)<input name="whatsapp" required inputmode="numeric" pattern="[0-9]{10,15}" placeholder="553899662812"></label>
+              <label>Telefone<input name="phone" maxlength="40"></label>
+              <label>Endereço<textarea name="address" rows="2" maxlength="240"></textarea></label>
+              <label>Horários de funcionamento<textarea name="hours" rows="2" maxlength="500"></textarea></label>
+              <label>Link do mapa<input name="mapUrl" type="url" placeholder="https://maps.google.com/..."></label>
+              <label>Instagram<input name="instagram" type="url" placeholder="https://instagram.com/..."></label>
+              <label>Facebook<input name="facebook" type="url" placeholder="https://facebook.com/..."></label>
+            </fieldset>
+            <div class="form-actions"><p class="upload-progress" id="settings-progress" aria-live="polite"></p><button class="primary-button" type="submit">Salvar e publicar</button></div>
+          </form>
+        </section>
+
+        <section class="view-panel" id="view-maintenance" hidden>
+          <div class="view-heading"><div><p class="eyebrow">Espaço e desempenho</p><h1>Manutenção do banco</h1><p>A limpeza roda automaticamente a cada hora. Aqui você pode conferir e executar quando quiser.</p></div></div>
+          <div class="stats-grid stats-four">
+            <article class="stat-card"><span>Limpeza automática</span><strong id="mt-auto">—</strong></article>
+            <article class="stat-card"><span>Imagens em uso</span><strong id="mt-images">—</strong></article>
+            <article class="stat-card"><span>Espaço em imagens</span><strong id="mt-bytes">—</strong></article>
+            <article class="stat-card"><span>Última execução</span><strong id="mt-last">—</strong></article>
+          </div>
+          <article class="report-card">
+            <h2>Último resultado</h2>
+            <div id="mt-report"><p class="empty-admin">Nenhuma limpeza executada nesta sessão.</p></div>
+          </article>
+          <div class="form-actions">
+            <p class="upload-progress" id="maintenance-progress" aria-live="polite"></p>
+            <button class="secondary-button" type="button" id="maintenance-simulate">Simular (sem apagar)</button>
+            <button class="primary-button" type="button" id="maintenance-run">Limpar agora</button>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <dialog class="product-dialog" id="product-dialog">
+    <form id="product-form" class="dialog-form">
+      <div class="dialog-heading"><div><p class="eyebrow">Catálogo Herbal</p><h2 id="product-dialog-title">Novo produto</h2></div><button type="button" class="dialog-close" id="product-dialog-close" aria-label="Fechar">×</button></div>
+      <input type="hidden" name="id">
+      <label>Nome do produto<input name="name" required maxlength="120"></label>
+      <label>Descrição<textarea name="description" rows="3" maxlength="1200"></textarea></label>
+      <div class="form-row"><label>Categoria<select name="categoryId" required id="product-category-select"></select></label><label>Preço (opcional)<input name="price" inputmode="decimal" placeholder="Ex.: 29,90"></label></div>
+      <div class="check-row"><label><input type="checkbox" name="active" checked> Ativo no site</label><label><input type="checkbox" name="featured"> Destaque</label><label><input type="checkbox" name="promotion"> Promoção</label><label><input type="checkbox" name="new"> Novidade</label></div>
+      <div class="product-image-editor">
+        <div class="image-field">
+          <span class="field-label">Foto do produto</span>
+          <label class="image-picker" for="product-image-input"><span class="picker-icon" aria-hidden="true">＋</span><strong>Escolher uma imagem</strong><span>PNG, JPG ou WebP · até 5 MB</span><input id="product-image-input" name="image" type="file" accept="image/png,image/jpeg,image/webp"></label>
+          <p class="image-file-name" id="product-image-file-name">Nenhuma imagem nova selecionada</p>
+          <label id="remove-product-image-wrap" class="check-row" hidden><input name="removeImage" type="checkbox"> Remover a foto atual</label>
+        </div>
+        <article class="product-live-preview" aria-label="Prévia do cartão de produto">
+          <span class="preview-mini-label">PRÉVIA DO PRODUTO</span>
+          <div class="product-preview-image"><img class="image-preview" id="product-image-preview" alt="Prévia da foto do produto" hidden><span class="preview-placeholder">Foto do produto</span></div>
+          <div class="product-preview-copy"><span id="product-preview-category">Categoria</span><strong data-product-preview="name">Nome do produto</strong><small data-product-preview="description">A descrição aparecerá aqui</small><b data-product-preview="price">Consulte o preço</b></div>
+        </article>
+      </div>
+      <div class="gallery-editor">
+        <span class="field-label">Fotos extras (aparecem ao abrir o produto) <small id="gallery-count"></small></span>
+        <div class="gallery-grid" id="gallery-grid"></div>
+        <label class="image-picker image-picker-compact" for="product-gallery-input"><span class="picker-icon" aria-hidden="true">＋</span><strong>Adicionar fotos</strong><span>Até 5 fotos extras · PNG, JPG ou WebP · 5 MB cada</span><input id="product-gallery-input" type="file" multiple accept="image/png,image/jpeg,image/webp"></label>
+      </div>
+      <p class="upload-progress" id="product-progress" aria-live="polite"></p>
+      <div class="form-actions"><button class="secondary-button" type="button" id="product-cancel">Cancelar</button><button class="primary-button" type="submit">Salvar produto</button></div>
+    </form>
+  </dialog>
+</body>
+</html>

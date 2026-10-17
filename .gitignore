@@ -1,0 +1,13 @@
+node_modules/
+.env
+.env.*
+!.env.example
+npm-debug.log*
+coverage/
+
+# Artefatos locais de depuração
+_*.js
+_*.mjs
+_*.log
+_*.err
+_*.png

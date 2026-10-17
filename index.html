@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#12503a">
+  <meta name="description" content="Conheça a Herbal Suplementos, explore produtos naturais e fale com nossa equipe pelo WhatsApp.">
+  <meta property="og:title" content="Herbal Suplementos | Produtos naturais">
+  <meta property="og:description" content="Produtos naturais para a sua rotina. Conheça a Herbal Suplementos e fale com nossa equipe.">
+  <title>Herbal Suplementos | Produtos naturais</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/Js/app.js" defer></script>
+  <script src="/Js/consent.js" defer></script>
+</head>
+<body>
+  <div class="topbar" id="topbar">Bem-vindo à Herbal Suplementos</div>
+  <header class="site-header">
+    <a class="logo" href="#inicio" aria-label="Herbal Suplementos, início">
+      <span class="logo-mark" aria-hidden="true">H</span>
+      <span>Herbal<small>SUPLEMENTOS</small></span>
+    </a>
+    <button class="menu-toggle" id="menu-toggle" type="button" aria-expanded="false" aria-controls="main-nav" aria-label="Abrir menu">
+      <span></span><span></span><span></span>
+    </button>
+    <nav id="main-nav" aria-label="Navegação principal">
+      <a href="#inicio">Início</a>
+      <a href="#sobre">A Herbal</a>
+      <a href="#catalogo">Produtos</a>
+      <a href="#contato">Contato</a>
+    </nav>
+    <a class="button button-small header-contact" id="header-whatsapp" href="https://wa.me/553899662812" target="_blank" rel="noopener noreferrer">Fale conosco <span aria-hidden="true">↗</span></a>
+  </header>
+
+  <main>
+    <section class="hero" id="inicio">
+      <div class="hero-copy">
+        <p class="eyebrow">Bem-estar que vem da natureza</p>
+        <h1 id="hero-title">Mais natureza no seu dia a dia</h1>
+        <p class="hero-text" id="hero-text">Encontre produtos naturais para a sua rotina. Fale com a nossa equipe e conheça o catálogo.</p>
+        <div class="hero-actions">
+          <a class="button" href="#catalogo">Explore os produtos <span aria-hidden="true">↓</span></a>
+          <a class="text-link" id="hero-whatsapp" href="https://wa.me/553899662812" target="_blank" rel="noopener noreferrer">Converse pelo WhatsApp <span aria-hidden="true">↗</span></a>
+        </div>
+        <div class="hero-note"><span class="note-line"></span><span>Escolhas naturais para a sua rotina</span></div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-image" id="hero-image">
+          <img id="hero-photo" alt="Produtos naturais da Herbal Suplementos" width="1200" height="900" hidden>
+          <div class="hero-product-art" aria-hidden="true"><span>Herbal<small>SUPLEMENTOS<br>PRODUTOS NATURAIS</small></span></div>
+        </div>
+        <div class="hero-caption"><span>HERBAL SUPLEMENTOS</span><span>Desde a natureza, para você</span></div>
+        <div class="hero-ornament" aria-hidden="true">H</div>
+      </div>
+    </section>
+
+    <section class="catalog-section section-pad" id="catalogo">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Encontre o que procura</p>
+          <h2>Nosso catálogo</h2>
+          <p class="section-intro">Conheça nossa seleção e consulte a disponibilidade diretamente com a equipe.</p>
+        </div>
+        <a class="text-link" id="catalog-whatsapp" href="https://wa.me/553899662812" target="_blank" rel="noopener noreferrer">Tire suas dúvidas <span aria-hidden="true">↗</span></a>
+      </div>
+      <div class="catalog-tools">
+        <label class="search-box"><span class="sr-only">Buscar produto</span><span aria-hidden="true">⌕</span><input id="product-search" type="search" placeholder="Buscar um produto" autocomplete="off"></label>
+        <div class="category-filters" id="category-filters" aria-label="Filtrar por categoria"></div>
+      </div>
+      <p class="load-message" id="catalog-status" role="status" aria-live="polite"></p>
+      <div class="product-grid" id="lista-produtos"></div>
+    </section>
+
+    <section class="about-section section-pad" id="sobre">
+      <div class="about-photo" id="about-image">
+        <img id="about-photo" alt="Conheça a Herbal Suplementos" width="1000" height="900" hidden>
+        <span class="photo-note">NATURALMENTE, HERBAL</span>
+      </div>
+      <div class="about-copy">
+        <p class="eyebrow">Um jeito mais natural de escolher</p>
+        <h2 id="about-title">Cuidado natural, atendimento próximo</h2>
+        <p id="about-text">Conheça a Herbal Suplementos e converse com a nossa equipe para encontrar os produtos que procura.</p>
+        <a class="text-link" id="about-whatsapp" href="https://wa.me/553899662812" target="_blank" rel="noopener noreferrer">Fale com a nossa equipe <span aria-hidden="true">↗</span></a>
+      </div>
+    </section>
+
+    <section class="contact-section section-pad" id="contato">
+      <div class="contact-lead">
+        <p class="eyebrow">Estamos aqui para ajudar</p>
+        <h2>Vamos conversar?</h2>
+        <p>Entre em contato para saber mais sobre produtos, novidades e disponibilidade.</p>
+        <a class="button button-light" id="contact-whatsapp" href="https://wa.me/553899662812" target="_blank" rel="noopener noreferrer">Chamar no WhatsApp <span aria-hidden="true">↗</span></a>
+      </div>
+      <div class="contact-details">
+        <div class="contact-item"><span>CONTATO</span><a id="contact-phone" href="https://wa.me/553899662812">Chame no WhatsApp</a></div>
+        <div class="contact-item"><span>ENDEREÇO</span><p id="contact-address">Consulte nossa equipe pelo WhatsApp</p></div>
+        <div class="contact-item"><span>HORÁRIOS</span><p id="contact-hours">Consulte os horários de atendimento</p></div>
+        <a class="text-link contact-map" id="map-link" href="https://maps.google.com" target="_blank" rel="noopener noreferrer" hidden>Ver localização no mapa <span aria-hidden="true">↗</span></a>
+        <div class="social-links">
+          <a id="instagram-link" href="https://www.instagram.com/herbalsuplementos.terapiaervas/" target="_blank" rel="noopener noreferrer">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle class="social-icon-dot" cx="18" cy="6" r="1"></circle></svg>
+            Instagram <span aria-hidden="true">↗</span>
+          </a>
+          <a id="facebook-link" href="#" target="_blank" rel="noopener noreferrer" hidden>Facebook ↗</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <a class="logo footer-logo" href="#inicio"><span class="logo-mark" aria-hidden="true">H</span><span>Herbal<small>SUPLEMENTOS</small></span></a>
+    <p>Produtos naturais, atendimento próximo.</p>
+    <div class="footer-links"><a href="#sobre">A Herbal</a><a href="#catalogo">Produtos</a><a href="#contato">Contato</a><a href="https://www.instagram.com/herbalsuplementos.terapiaervas/" target="_blank" rel="noopener noreferrer">Instagram ↗</a><a href="/termos">Termos de Uso</a><a href="/privacidade">Privacidade</a><a href="/cookies">Cookies</a><a href="/admin/">Área administrativa</a></div>
+    <small class="copyright">© <span id="copyright-year"></span> Herbal Suplementos. Todos os direitos reservados.</small>
+  </footer>
+  <a class="instagram-float" id="instagram-float" href="https://www.instagram.com/herbalsuplementos.terapiaervas/" target="_blank" rel="noopener noreferrer" aria-label="Siga a Herbal Suplementos no Instagram">
+    <svg aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.3" cy="6.7" r=".6"></circle></svg>
+  </a>
+  <button class="cart-float" id="cart-open" type="button" aria-label="Abrir carrinho">
+    <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="9" cy="20" r="1.3"></circle><circle cx="18" cy="20" r="1.3"></circle><path d="M2 3h3l2.6 11.4a1 1 0 0 0 1 .8h9a1 1 0 0 0 1-.7L21 7H6"></path></svg>
+    <span class="cart-count" id="cart-count" hidden>0</span>
+  </button>
+  <div class="cart-backdrop" id="cart-backdrop" hidden></div>
+  <aside class="cart-drawer" id="cart-drawer" aria-label="Carrinho" aria-hidden="true" hidden>
+    <header class="cart-head"><h2>Seu carrinho</h2><button type="button" id="cart-close" aria-label="Fechar carrinho">✕</button></header>
+    <div class="cart-body" id="cart-items"></div>
+    <footer class="cart-foot">
+      <label class="cart-name">Seu nome (opcional)<input id="cart-customer" maxlength="80" autocomplete="name" placeholder="Para identificarmos seu pedido"></label>
+      <div class="cart-total"><span>Total</span><strong id="cart-total">R$ 0,00</strong></div>
+      <p class="cart-error" id="cart-error" role="alert" hidden></p>
+      <button class="button cart-checkout" id="cart-checkout" type="button">Finalizar no WhatsApp</button>
+      <p class="cart-hint">Geramos um código do pedido para você. Guarde o código: é ele que você informa na loja quando chegar.</p>
+      <section class="last-order" id="last-order" aria-live="polite" hidden>
+        <span class="last-order-label">Seu código de pedido</span>
+        <strong class="last-order-code" id="order-code"></strong>
+        <span class="last-order-hint">Total: <span id="order-total">R$ 0,00</span></span>
+        <p class="last-order-note">Não enviamos este código pelo WhatsApp. Ele fica só com você — informe-o na loja ao chegar para retirar o seu pedido.</p>
+      </section>
+    </footer>
+  </aside>
+  <dialog class="product-modal" id="product-modal" aria-labelledby="modal-title">
+    <button class="modal-close" id="modal-close" type="button" aria-label="Fechar detalhes">✕</button>
+    <div class="modal-gallery">
+      <div class="modal-stage" id="modal-stage">
+        <img id="modal-image" alt="" hidden>
+        <span class="product-placeholder" id="modal-placeholder" aria-hidden="true">H</span>
+        <button class="modal-nav modal-prev" id="modal-prev" type="button" aria-label="Foto anterior" hidden>‹</button>
+        <button class="modal-nav modal-next" id="modal-next" type="button" aria-label="Próxima foto" hidden>›</button>
+      </div>
+      <div class="modal-thumbs" id="modal-thumbs"></div>
+    </div>
+    <div class="modal-info">
+      <span class="card-categoria" id="modal-category"></span>
+      <h2 id="modal-title"></h2>
+      <p class="modal-price" id="modal-price"></p>
+      <p class="modal-description" id="modal-description"></p>
+      <div class="modal-actions">
+        <button class="button" id="modal-add" type="button">Adicionar ao carrinho</button>
+        <a class="button button-outline" id="modal-whatsapp" target="_blank" rel="noopener noreferrer">Consultar no WhatsApp ↗</a>
+      </div>
+    </div>
+  </dialog>
+  <a class="whatsapp-float" id="whatsapp-float" href="https://wa.me/553899662812" target="_blank" rel="noopener noreferrer" aria-label="Converse com a Herbal Suplementos pelo WhatsApp">
+    <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M20.5 11.8a8.45 8.45 0 0 1-12.5 7.4L3 20.5l1.4-4.8a8.45 8.45 0 1 1 16.1-3.9Z"></path><path d="M8.4 7.9c.2-.5.4-.5.7-.5h.5c.2 0 .4.1.5.4l.8 1.8c.1.2.1.4 0 .6l-.5.7c-.2.2-.2.4 0 .6.4.7 1 1.3 1.7 1.7.2.1.4.1.6-.1l.7-.8c.2-.2.4-.2.6-.1l1.7.8c.3.1.4.3.4.5s-.1 1-.5 1.4c-.4.5-1.1.7-1.8.7s-1.7-.3-2.8-.8c-1.4-.7-2.6-1.9-3.4-3.2-.7-1.1-1-2.1-1-2.8 0-.7.3-1.3.8-1.9Z"></path></svg>
+    <span>Fale conosco</span>
+  </a>
+</body>
+</html>
