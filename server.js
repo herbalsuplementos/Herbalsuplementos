@@ -1,4 +1,4 @@
-﻿require("dotenv").config();
+require("dotenv").config();
 
 const path = require("node:path");
 const fs = require("node:fs");
@@ -327,9 +327,18 @@ function parseProductInput(body) {
   };
 }
 
-app.get("/api/health", (request, response) => {
-  response.json({ status: mongoose.connection.readyState === 1 ? "ok" : "unavailable" });
-});
+app.get("/api/health", asyncRoute(async (request, response) => {
+  if (inTestRunner) return response.json({ status: "ok", db: "test" });
+  if (!MONGODB_URI) {
+    return response.status(500).json({ status: "unavailable", db: "missing_config" });
+  }
+  try {
+    await ensureReady();
+    return response.json({ status: "ok", db: "connected" });
+  } catch {
+    return response.status(503).json({ status: "unavailable", db: "disconnected" });
+  }
+}));
 
 // Em serverless cada invocação reusa (ou não) o processo: guardamos a promessa
 // de conexão para não reconectar a cada requisição e criamos o bucket do GridFS

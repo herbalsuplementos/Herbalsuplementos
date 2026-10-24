@@ -273,7 +273,7 @@
   }
 
   const money = (value) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value || 0);
-  const statusLabels = { pending: "Pendente", delivered: "Entregue", cancelled: "Cancelado" };
+  const statusLabels = { pending: "Pendente", delivered: "Retirado", cancelled: "Cancelado" };
 
   function el(tag, className, text) {
     const node = document.createElement(tag);
@@ -291,11 +291,11 @@
   }
 
   async function changeOrder(order, action) {
-    const label = action === "deliver" ? "confirmar a entrega" : "cancelar";
+    const label = action === "deliver" ? "confirmar a retirada" : "cancelar";
     if (!window.confirm(`Deseja ${label} do pedido ${order.code}?`)) return;
     try {
       await api(`/api/admin/orders/${order.id}/${action}`, { method: "POST", body: "{}" });
-      showNotice(action === "deliver" ? "Entrega confirmada." : "Pedido cancelado.");
+      showNotice(action === "deliver" ? "Retirada confirmada." : "Pedido cancelado.");
       byId("order-result").hidden = true;
       loadOrders();
     } catch (error) { showNotice(error.message, true); }
@@ -304,7 +304,7 @@
   function orderActions(order) {
     const actions = el("div", "row-actions");
     if (order.status !== "pending") return actions;
-    const deliver = el("button", "", "Marcar entregue");
+    const deliver = el("button", "", "Marcar retirado");
     deliver.type = "button";
     deliver.addEventListener("click", () => changeOrder(order, "deliver"));
     const cancel = el("button", "danger", "Cancelar");
@@ -325,7 +325,7 @@
     }
     const meta = [`Feito em ${new Date(order.createdAt).toLocaleString("pt-BR")}`];
     if (order.customerName) meta.push(`Cliente: ${order.customerName}`);
-    if (order.deliveredAt) meta.push(`Entregue em ${new Date(order.deliveredAt).toLocaleString("pt-BR")}${order.handledBy ? ` por ${order.handledBy}` : ""}`);
+    if (order.deliveredAt) meta.push(`Retirado em ${new Date(order.deliveredAt).toLocaleString("pt-BR")}${order.handledBy ? ` por ${order.handledBy}` : ""}`);
     box.append(head, list, el("p", "order-total", `Total: ${money(order.total)}`), el("p", "order-meta", meta.join(" · ")), orderActions(order));
     box.hidden = false;
   }

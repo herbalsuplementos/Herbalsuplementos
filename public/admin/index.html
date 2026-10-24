@@ -106,19 +106,19 @@
             <label for="order-code">Código do pedido</label>
             <div class="lookup-row">
               <input id="order-code" autocomplete="off" maxlength="12" placeholder="HB-XXXX-XXXX" required>
-              <button class="primary-button" type="submit">Validar pedido</button>
+              <button class="primary-button" type="submit">Validar retirada</button>
             </div>
           </form>
           <div id="order-result" class="order-result" hidden></div>
           <div class="toolbar">
-            <select id="order-filter-status" aria-label="Filtrar pedidos"><option value="">Todos os pedidos</option><option value="pending">Pendentes</option><option value="delivered">Entregues</option><option value="cancelled">Cancelados</option></select>
+            <select id="order-filter-status" aria-label="Filtrar pedidos"><option value="">Todos os pedidos</option><option value="pending">Pendentes</option><option value="delivered">Retirados</option><option value="cancelled">Cancelados</option></select>
           </div>
           <div class="table-wrap"><table><thead><tr><th>Código</th><th>Data</th><th>Itens</th><th>Total</th><th>Situação</th><th>Ações</th></tr></thead><tbody id="orders-table"></tbody></table></div>
           <p class="empty-admin" id="orders-empty" hidden>Nenhum pedido encontrado.</p>
         </section>
 
         <section class="view-panel" id="view-reports" hidden>
-          <div class="view-heading"><div><p class="eyebrow">Acompanhe a loja</p><h1>Relatórios</h1><p>Receita considera apenas pedidos entregues.</p></div>
+          <div class="view-heading"><div><p class="eyebrow">Acompanhe a loja</p><h1>Relatórios</h1><p>Receita considera apenas pedidos retirados.</p></div>
             <select id="report-period" aria-label="Período"><option value="today">Hoje</option><option value="7d">Últimos 7 dias</option><option value="30d" selected>Últimos 30 dias</option><option value="90d">Últimos 90 dias</option><option value="all">Todo o período</option></select>
           </div>
           <div class="stats-grid stats-four">

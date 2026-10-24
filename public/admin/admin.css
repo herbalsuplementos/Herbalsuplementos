@@ -173,7 +173,7 @@ body { background: #f4f6f2; }
 .quick-card:hover { transform: translateY(-2px); border-color: #bfd0c1; box-shadow: 0 12px 25px #142a1b10; }
 .toolbar { gap: 12px; }
 .admin-search input, .toolbar select { min-height: 46px; padding-inline: 14px; border-color: #e0e5df; border-radius: 9px; background: white; }
-.table-wrap { overflow: hidden; }
+.table-wrap { overflow-x: auto; overflow-y: hidden; }
 th, td { padding: 15px 17px; }
 .empty-admin { padding: 40px; }
 .inline-form, .category-row { padding: 21px; }

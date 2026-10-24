@@ -149,6 +149,7 @@
       const lines = order.items.map((item) => `• ${item.quantity}x ${item.name} — ${money(item.subtotal)}`);
       const message = [
         "Olá! Gostaria de separar o meu pedido na Herbal Suplementos.",
+        "Retirada na loja (sem entrega).",
         order.customerName ? `Cliente: ${order.customerName}` : "",
         "",
         ...lines,
