@@ -1,6 +1,6 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
-const { app, adminUsernameInput, imageType, productInput, settingsInput, orderInput, codeInput, generateOrderCode, pruneStoredOrders } = require("../server");
+const { app, adminUsernameInput, imageType, productInput, settingsInput, orderInput, codeInput, generateOrderCode, pruneStoredSessions, pruneStoredOrders } = require("../server");
 
 test("detecta PNG, JPEG e WebP pela assinatura do arquivo", () => {
   assert.equal(imageType(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10])).contentType, "image/png");
@@ -101,6 +101,36 @@ test("mantém apenas os 50 pedidos mais recentes no banco", async () => {
   const removed = await pruneStoredOrders(fakeOrderModel, 50);
   assert.equal(removed, 1);
   assert.deepEqual(deletedQueries, [{ _id: { $in: ["pedido-antigo-1"] } }]);
+});
+
+test("mantém apenas as 10 sessões mais recentes no banco", async () => {
+  const deletedQueries = [];
+  const fakeSessionCollection = {
+    async countDocuments() { return 11; },
+    find(query, options) {
+      assert.deepEqual(query, { _id: { $ne: "sessao-atual" } });
+      assert.deepEqual(options, { projection: { _id: 1 } });
+      return {
+        sort(sortFields) {
+          assert.deepEqual(sortFields, { expires: 1, _id: 1 });
+          return this;
+        },
+        limit(value) {
+          assert.equal(value, 1);
+          return this;
+        },
+        async toArray() { return [{ _id: "sessao-antiga-1" }]; },
+      };
+    },
+    async deleteMany(query) {
+      deletedQueries.push(query);
+      return { deletedCount: 1 };
+    },
+  };
+
+  const removed = await pruneStoredSessions(fakeSessionCollection, 10, "sessao-atual");
+  assert.equal(removed, 1);
+  assert.deepEqual(deletedQueries, [{ _id: { $in: ["sessao-antiga-1"] } }]);
 });
 
 test("bloqueia acesso anônimo a pedidos e relatórios administrativos", async (context) => {

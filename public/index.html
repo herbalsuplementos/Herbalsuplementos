@@ -16,8 +16,8 @@
   <div class="topbar" id="topbar">Bem-vindo à Herbal Suplementos</div>
   <header class="site-header">
     <a class="logo" href="#inicio" aria-label="Herbal Suplementos, início">
-      <span class="logo-mark" aria-hidden="true">H</span>
-      <span>Herbal<small>SUPLEMENTOS</small></span>
+      <img class="logo-mark logo-mark-image" src="/media/herbal-logo.webp" alt="" width="56" height="62" decoding="async">
+      <span class="logo-wordmark">Herbal<small>SUPLEMENTOS</small></span>
     </a>
     <button class="menu-toggle" id="menu-toggle" type="button" aria-expanded="false" aria-controls="main-nav" aria-label="Abrir menu">
       <span></span><span></span><span></span>
@@ -69,9 +69,34 @@
       <div class="product-grid" id="lista-produtos"></div>
     </section>
 
+    <section class="instagram-section section-pad" aria-labelledby="instagram-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Direto do Instagram</p>
+          <h2 id="instagram-title">Destaques da Herbal</h2>
+          <p class="section-intro">Alguns produtos e campanhas que a loja já publica no Instagram para deixar a vitrine mais viva.</p>
+        </div>
+        <a class="text-link" href="https://www.instagram.com/herbalsuplementos.terapiaervas/" target="_blank" rel="noopener noreferrer">Ver Instagram <span aria-hidden="true">↗</span></a>
+      </div>
+      <div class="instagram-grid">
+        <a class="instagram-card" href="https://www.instagram.com/herbalsuplementos.terapiaervas/" target="_blank" rel="noopener noreferrer" aria-label="Ver destaque sobre Uxi Amarelo no Instagram">
+          <img src="/media/instagram-uixi-amarelo.webp" alt="Arte da Herbal Suplementos sobre Uxi Amarelo com Unha de Gato" width="900" height="900" loading="lazy" decoding="async">
+          <div class="instagram-card-copy"><strong>Uxi Amarelo + Unha de Gato</strong><span>Saúde feminina e bem-estar geral.</span></div>
+        </a>
+        <a class="instagram-card" href="https://www.instagram.com/herbalsuplementos.terapiaervas/" target="_blank" rel="noopener noreferrer" aria-label="Ver destaque sobre óleos essenciais no Instagram">
+          <img src="/media/instagram-oleos.webp" alt="Arte da Herbal Suplementos sobre óleos essenciais" width="900" height="1198" loading="lazy" decoding="async">
+          <div class="instagram-card-copy"><strong>Óleos essenciais</strong><span>Linha com foco, relaxamento e cuidado diário.</span></div>
+        </a>
+        <a class="instagram-card" href="https://www.instagram.com/herbalsuplementos.terapiaervas/" target="_blank" rel="noopener noreferrer" aria-label="Ver destaque sobre Tribulus Black no Instagram">
+          <img src="/media/instagram-tribulus.webp" alt="Arte da Herbal Suplementos sobre Tribulus Black" width="900" height="900" loading="lazy" decoding="async">
+          <div class="instagram-card-copy"><strong>Tribulus Black</strong><span>Energia, vitalidade e desempenho físico.</span></div>
+        </a>
+      </div>
+    </section>
+
     <section class="about-section section-pad" id="sobre">
-      <div class="about-photo" id="about-image">
-        <img id="about-photo" alt="Conheça a Herbal Suplementos" width="1000" height="900" hidden>
+      <div class="about-photo has-image" id="about-image">
+        <img id="about-photo" src="/media/instagram-oleos.webp" alt="Arte da Herbal Suplementos com óleos essenciais" width="1000" height="900" loading="lazy" decoding="async">
         <div class="about-placeholder" aria-hidden="true">
           <span class="about-placeholder-mark">Herbal</span>
           <strong>Produtos naturais com atendimento próximo</strong>
@@ -111,7 +136,7 @@
   </main>
 
   <footer class="site-footer">
-    <a class="logo footer-logo" href="#inicio"><span class="logo-mark" aria-hidden="true">H</span><span>Herbal<small>SUPLEMENTOS</small></span></a>
+    <a class="logo footer-logo" href="#inicio"><img class="logo-mark logo-mark-image" src="/media/herbal-logo.webp" alt="" width="56" height="62" loading="lazy" decoding="async"><span class="logo-wordmark">Herbal<small>SUPLEMENTOS</small></span></a>
     <p>Produtos naturais, atendimento próximo.</p>
     <div class="footer-links"><a href="#sobre">A Herbal</a><a href="#catalogo">Produtos</a><a href="#contato">Contato</a><a href="https://www.instagram.com/herbalsuplementos.terapiaervas/" target="_blank" rel="noopener noreferrer">Instagram ↗</a><a href="/termos">Termos de Uso</a><a href="/privacidade">Privacidade</a><a href="/cookies">Cookies</a><a href="/admin/">Área administrativa</a></div>
     <small class="copyright">© <span id="copyright-year"></span> Herbal Suplementos. Todos os direitos reservados.</small>
