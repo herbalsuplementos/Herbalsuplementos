@@ -447,6 +447,7 @@ app.get("/api/images/:id", asyncRoute(async (request, response) => {
 }));
 
 const CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+const MAX_STORED_ORDERS = 50;
 const codeInput = z.string().trim().toUpperCase().regex(/^HB-[A-Z0-9]{4}-[A-Z0-9]{4}$/);
 const orderInput = z.object({
   customerName: z.string().trim().max(80).optional().default(""),
@@ -466,6 +467,22 @@ const orderLimiter = rateLimit({
 function generateOrderCode() {
   const pick = () => Array.from({ length: 4 }, () => CODE_ALPHABET[crypto.randomInt(CODE_ALPHABET.length)]).join("");
   return `HB-${pick()}-${pick()}`;
+}
+
+async function pruneStoredOrders(OrderModel = Order, maxOrders = MAX_STORED_ORDERS) {
+  const total = await OrderModel.countDocuments();
+  if (total <= maxOrders) return 0;
+
+  const staleOrders = await OrderModel.find({}, { _id: 1 })
+    .sort({ createdAt: -1, _id: -1 })
+    .skip(maxOrders)
+    .select("_id")
+    .lean();
+
+  if (!staleOrders.length) return 0;
+  const ids = staleOrders.map((order) => order._id);
+  const removed = await OrderModel.deleteMany({ _id: { $in: ids } });
+  return removed.deletedCount || 0;
 }
 
 function roundMoney(value) {
@@ -517,6 +534,11 @@ app.post("/api/orders", orderLimiter, asyncRoute(async (request, response) => {
   for (let attempt = 0; attempt < 5; attempt += 1) {
     try {
       const order = await Order.create({ code: generateOrderCode(), items, total, customerName: parsed.data.customerName });
+      try {
+        await pruneStoredOrders();
+      } catch (error) {
+        console.error("NÃ£o foi possÃ­vel limpar pedidos antigos:", error.message);
+      }
       return response.status(201).json({ code: order.code, total: order.total, items: order.items, customerName: order.customerName });
     } catch (error) {
       if (error.code !== 11000) throw error;
@@ -905,4 +927,5 @@ Object.assign(module.exports, {
   orderInput,
   codeInput,
   generateOrderCode,
+  pruneStoredOrders,
 });

@@ -39,7 +39,9 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
 .sidebar-bottom a, .sidebar-bottom button { border: 0; background: transparent; color: var(--muted); text-align: left; text-decoration: none; cursor: pointer; font-size: .76rem; }
 .admin-main { min-height: 100vh; margin-left: 244px; }
 .admin-topbar { position: sticky; z-index: 5; top: 0; display: flex; min-height: 66px; align-items: center; justify-content: space-between; gap: 20px; padding: 0 38px; border-bottom: 1px solid var(--line); background: #ffffffed; backdrop-filter: blur(8px); }
-.admin-topbar > div { display: flex; align-items: center; gap: 11px; font-size: .78rem; }
+.topbar-nav, .admin-topbar > div { display: flex; align-items: center; gap: 11px; font-size: .78rem; }
+.topbar-back { display: inline-flex; min-height: 38px; align-items: center; justify-content: center; padding: 0 12px; border: 1px solid #d8dfd8; border-radius: 8px; background: #fff; color: var(--green); cursor: pointer; font-size: .76rem; font-weight: 700; }
+.topbar-back:hover { background: #f3f7f3; }
 .breadcrumb, .breadcrumb-divider { color: #92958d; }
 .secure-badge { padding: 6px 9px; border-radius: 20px; background: #eaf3ed; color: var(--green); font-size: .67rem; }
 .mobile-menu { display: none; border: 0; background: transparent; color: var(--green); font-size: 1.25rem; }
@@ -123,6 +125,8 @@ tbody tr:last-child td { border-bottom: 0; }
   .breadcrumb { display: none; }
   .breadcrumb-divider { display: none; }
   .secure-badge { font-size: .61rem; }
+  .topbar-nav { min-width: 0; flex: 1; }
+  .topbar-back { min-height: 36px; padding: 0 10px; }
   .admin-content { padding: 27px 16px 50px; }
   .view-heading { align-items: flex-start; flex-direction: column; }
   .view-heading h1 { font-size: 1.9rem; }

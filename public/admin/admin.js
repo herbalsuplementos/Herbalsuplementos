@@ -1,5 +1,5 @@
 (() => {
-  const state = { csrf: "", products: [], categories: [], settings: {} };
+  const state = { csrf: "", products: [], categories: [], settings: {}, currentView: "dashboard", viewHistory: [] };
   const byId = (id) => document.getElementById(id);
   const form = byId("product-form");
   const dialog = byId("product-dialog");
@@ -70,19 +70,35 @@
     byId("admin-layout").hidden = false;
   }
 
-  function activateView(view) {
-    for (const panel of document.querySelectorAll(".view-panel")) panel.hidden = panel.id !== `view-${view}`;
-    for (const button of document.querySelectorAll(".nav-item")) button.classList.toggle("active", button.dataset.view === view);
-    byId("page-title").textContent = titles[view];
+  function updateBackButton() {
+    const button = byId("back-button");
+    const canGoBack = state.viewHistory.length > 0 || state.currentView !== "dashboard";
+    button.hidden = !canGoBack;
+    button.disabled = !canGoBack;
+  }
+
+  function activateView(view, options = {}) {
+    const nextView = titles[view] ? view : "dashboard";
+    if (!options.skipHistory && state.currentView !== nextView) state.viewHistory.push(state.currentView);
+    state.currentView = nextView;
+    for (const panel of document.querySelectorAll(".view-panel")) panel.hidden = panel.id !== `view-${nextView}`;
+    for (const button of document.querySelectorAll(".nav-item")) button.classList.toggle("active", button.dataset.view === nextView);
+    byId("page-title").textContent = titles[nextView];
     byId("sidebar").classList.remove("open");
     byId("mobile-menu").setAttribute("aria-expanded", "false");
-    if (view === "dashboard") loadDashboard();
-    if (view === "products") loadProducts();
-    if (view === "categories") loadCategories();
-    if (view === "orders") loadOrders();
-    if (view === "reports") loadReports();
-    if (view === "site") loadSettings();
-    if (view === "maintenance") loadMaintenance();
+    updateBackButton();
+    if (nextView === "dashboard") loadDashboard();
+    if (nextView === "products") loadProducts();
+    if (nextView === "categories") loadCategories();
+    if (nextView === "orders") loadOrders();
+    if (nextView === "reports") loadReports();
+    if (nextView === "site") loadSettings();
+    if (nextView === "maintenance") loadMaintenance();
+  }
+
+  function goBackView() {
+    const previousView = state.viewHistory.pop() || "dashboard";
+    activateView(previousView, { skipHistory: true });
   }
 
   async function loadDashboard() {
@@ -815,6 +831,7 @@
     activateView(button.dataset.go);
     if (button.dataset.action === "new-product") openProduct();
   });
+  byId("back-button").addEventListener("click", goBackView);
   byId("mobile-menu").addEventListener("click", (event) => {
     const open = byId("sidebar").classList.toggle("open");
     event.currentTarget.setAttribute("aria-expanded", String(open));
@@ -853,7 +870,7 @@
       const session = await response.json();
       if (session.authenticated) {
         showAdmin();
-        activateView("dashboard");
+        activateView("dashboard", { skipHistory: true });
       } else showLogin();
     } catch (error) {
       showLogin();

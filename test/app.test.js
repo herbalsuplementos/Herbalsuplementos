@@ -1,6 +1,6 @@
-﻿const test = require("node:test");
+const test = require("node:test");
 const assert = require("node:assert/strict");
-const { app, adminUsernameInput, imageType, productInput, settingsInput, orderInput, codeInput, generateOrderCode } = require("../server");
+const { app, adminUsernameInput, imageType, productInput, settingsInput, orderInput, codeInput, generateOrderCode, pruneStoredOrders } = require("../server");
 
 test("detecta PNG, JPEG e WebP pela assinatura do arquivo", () => {
   assert.equal(imageType(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10])).contentType, "image/png");
@@ -75,6 +75,32 @@ test("valida pedidos e códigos de pedido", () => {
   for (let i = 0; i < 50; i += 1) assert.equal(codeInput.safeParse(generateOrderCode()).success, true);
   assert.equal(codeInput.parse("hb-abcd-2345"), "HB-ABCD-2345");
   assert.equal(codeInput.safeParse("qualquer").success, false);
+});
+
+test("mantém apenas os 50 pedidos mais recentes no banco", async () => {
+  const deletedQueries = [];
+  const fakeOrderModel = {
+    async countDocuments() { return 51; },
+    find() {
+      return {
+        sort() { return this; },
+        skip(value) {
+          assert.equal(value, 50);
+          return this;
+        },
+        select() { return this; },
+        async lean() { return [{ _id: "pedido-antigo-1" }]; },
+      };
+    },
+    async deleteMany(query) {
+      deletedQueries.push(query);
+      return { deletedCount: 1 };
+    },
+  };
+
+  const removed = await pruneStoredOrders(fakeOrderModel, 50);
+  assert.equal(removed, 1);
+  assert.deepEqual(deletedQueries, [{ _id: { $in: ["pedido-antigo-1"] } }]);
 });
 
 test("bloqueia acesso anônimo a pedidos e relatórios administrativos", async (context) => {

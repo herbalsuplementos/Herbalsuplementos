@@ -150,12 +150,13 @@
       const message = [
         "Olá! Gostaria de separar o meu pedido na Herbal Suplementos.",
         "Retirada na loja (sem entrega).",
+        `Código do pedido: ${order.code}`,
         order.customerName ? `Cliente: ${order.customerName}` : "",
         "",
         ...lines,
         "",
         `Total: ${money(order.total)}`,
-        "Vou informar o código do pedido na loja.",
+        "Vou apresentar esse código na loja para conferência.",
       ].filter((line, index, all) => line !== "" || (index > 0 && all[index - 1] !== "")).join("\n");
       lastOrder = { code: order.code, total: order.total, at: Date.now() };
       try { localStorage.setItem(ORDER_KEY, JSON.stringify(lastOrder)); } catch { /* armazenamento indisponível */ }
