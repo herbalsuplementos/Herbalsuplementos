@@ -1,6 +1,7 @@
 ﻿require("dotenv").config();
 
 const path = require("node:path");
+const fs = require("node:fs");
 const crypto = require("node:crypto");
 const express = require("express");
 const session = require("express-session");
@@ -26,7 +27,19 @@ const CLEANUP_ENABLED = process.env.CLEANUP_ENABLED !== "false";
 const imageOptimizationEnabled = process.env.IMAGE_OPTIMIZATION !== "false";
 const app = express();
 let imageBucket;
-app.set("trust proxy", process.env.TRUST_PROXY === "1" ? 1 : false);
+// Servidor tradicional: roda na raiz do projeto. Vercel: a função é executada a
+// partir de outro diretório, então procuramos a pasta pública nos dois lugares.
+const PUBLIC_DIR = [
+  path.join(__dirname, "public"),
+  path.join(process.cwd(), "public"),
+].find((dir) => fs.existsSync(path.join(dir, "index.html"))) || path.join(__dirname, "public");
+// O runner de testes do Node define esta variável; nesse contexto não abrimos
+// conexão com o banco nem usamos o store de sessão no MongoDB.
+const inTestRunner = Boolean(process.env.NODE_TEST_CONTEXT);
+// No Vercel a aplicação fica atrás de um proxy: sem isso o protocolo/IP vistos
+// pela aplicação ficam errados (cookies seguros e limitador de tentativas).
+const trustProxy = process.env.TRUST_PROXY === "1" || Boolean(process.env.VERCEL);
+app.set("trust proxy", trustProxy ? 1 : false);
 
 const adminUsernameInput = z.string().trim().min(1).max(32).regex(/^[a-zA-Z0-9_-]+$/);
 const optionalText = (max) => z.string().trim().max(max).optional().default("");
@@ -156,7 +169,10 @@ app.use(session({
   secret: SESSION_SECRET || "configuration-required-session-secret",
   resave: false,
   saveUninitialized: false,
-  store: MONGODB_URI && require.main === module
+  // Em produção (inclusive no Vercel, onde cada invocação pode cair em outra
+  // instância) as sessões precisam ficar no MongoDB para o login do painel
+  // sobreviver entre requisições. Nos testes usamos o store em memória.
+  store: MONGODB_URI && !inTestRunner
     ? MongoStore.create({ mongoUrl: MONGODB_URI, collectionName: "sessions" })
     : undefined,
   cookie: {
@@ -166,14 +182,14 @@ app.use(session({
     maxAge: 8 * 60 * 60 * 1000,
   },
 }));
-app.get("/", (request, response) => response.sendFile(path.join(__dirname, "index.html")));
-app.get(["/admin", "/admin/"], (request, response) => response.sendFile(path.join(__dirname, "admin", "index.html")));
-app.use("/css", express.static(path.join(__dirname, "css"), { dotfiles: "deny" }));
-app.use("/Js", express.static(path.join(__dirname, "Js"), { dotfiles: "deny" }));
+app.get("/", (request, response) => response.sendFile(path.join(PUBLIC_DIR, "index.html")));
+app.get(["/admin", "/admin/"], (request, response) => response.sendFile(path.join(PUBLIC_DIR, "admin", "index.html")));
+app.use("/css", express.static(path.join(PUBLIC_DIR, "css"), { dotfiles: "deny" }));
+app.use("/Js", express.static(path.join(PUBLIC_DIR, "Js"), { dotfiles: "deny" }));
 for (const page of ["termos", "privacidade", "cookies"]) {
-  app.get(`/${page}`, (request, response) => response.sendFile(path.join(__dirname, "legal", `${page}.html`)));
+  app.get(`/${page}`, (request, response) => response.sendFile(path.join(PUBLIC_DIR, "legal", `${page}.html`)));
 }
-app.use("/admin", express.static(path.join(__dirname, "admin"), { dotfiles: "deny", index: false }));
+app.use("/admin", express.static(path.join(PUBLIC_DIR, "admin"), { dotfiles: "deny", index: false }));
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -314,6 +330,35 @@ function parseProductInput(body) {
 app.get("/api/health", (request, response) => {
   response.json({ status: mongoose.connection.readyState === 1 ? "ok" : "unavailable" });
 });
+
+// Em serverless cada invocação reusa (ou não) o processo: guardamos a promessa
+// de conexão para não reconectar a cada requisição e criamos o bucket do GridFS
+// na primeira vez que o banco responde.
+let readyPromise = null;
+async function ensureReady() {
+  if (mongoose.connection.readyState !== 1) {
+    if (!readyPromise) {
+      readyPromise = mongoose.connect(MONGODB_URI).catch((error) => {
+        readyPromise = null; // permite tentar de novo na próxima requisição
+        throw error;
+      });
+    }
+    await readyPromise;
+  }
+  if (!imageBucket) imageBucket = new GridFSBucket(mongoose.connection.db, { bucketName: "siteImages" });
+}
+
+// Garante banco conectado antes das rotas que leem/escrevem. Fica fora do
+// /api/health para o diagnóstico de saúde continuar respondendo sem banco.
+function dbReady(request, response, next) {
+  if (inTestRunner) return next();
+  if (!MONGODB_URI) {
+    return next(Object.assign(new Error("Defina MONGODB_URI nas variáveis de ambiente."), { status: 500 }));
+  }
+  return ensureReady().then(() => next()).catch(next);
+}
+
+app.use("/api", dbReady);
 
 app.get("/api/csrf", (request, response) => {
   if (!request.session.csrfToken) request.session.csrfToken = crypto.randomBytes(32).toString("hex");
@@ -814,9 +859,8 @@ async function start() {
   if (!SESSION_SECRET || SESSION_SECRET.length < 32) {
     throw new Error("Defina SESSION_SECRET com pelo menos 32 caracteres no arquivo .env.");
   }
-  await mongoose.connect(MONGODB_URI);
-  imageBucket = new GridFSBucket(mongoose.connection.db, { bucketName: "siteImages" });
-  app.listen(PORT, () => console.log(`Herbal Suplementos disponÃ­vel em ${SITE_ORIGIN}`));
+  await ensureReady();
+  app.listen(PORT, () => console.log(`Herbal Suplementos disponível em ${SITE_ORIGIN}`));
 
   if (CLEANUP_ENABLED) {
     // ManutenÃ§Ã£o automÃ¡tica: relata no log e remove o que estÃ¡ sem uso.
@@ -835,4 +879,21 @@ if (require.main === module) {
   });
 }
 
-module.exports = { app, adminUsernameInput, imageType, productInput, settingsInput, Category, SiteSettings, Admin, Order, orderInput, codeInput, generateOrderCode };
+// O Vercel detecta este arquivo como app Express e invoca o próprio `app` como
+// handler; por isso o módulo exporta o app diretamente. Os demais itens ficam
+// anexados para os testes.
+module.exports = app;
+Object.assign(module.exports, {
+  app,
+  adminUsernameInput,
+  imageType,
+  productInput,
+  settingsInput,
+  Category,
+  SiteSettings,
+  Admin,
+  Order,
+  orderInput,
+  codeInput,
+  generateOrderCode,
+});
