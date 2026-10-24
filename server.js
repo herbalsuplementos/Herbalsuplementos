@@ -20,7 +20,6 @@ const PORT = Number(process.env.PORT || 3000);
 const MONGODB_URI = process.env.MONGODB_URI;
 const SESSION_SECRET = process.env.SESSION_SECRET;
 const SITE_ORIGIN = process.env.SITE_ORIGIN || `http://localhost:${PORT}`;
-const SESSION_COLLECTION_NAME = "sessions";
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
 const MAX_GALLERY = 5;
 const CLEANUP_INTERVAL_MS = 60 * 60 * 1000;
@@ -41,9 +40,6 @@ const inTestRunner = Boolean(process.env.NODE_TEST_CONTEXT);
 // pela aplicação ficam errados (cookies seguros e limitador de tentativas).
 const trustProxy = process.env.TRUST_PROXY === "1" || Boolean(process.env.VERCEL);
 app.set("trust proxy", trustProxy ? 1 : false);
-const sessionStore = MONGODB_URI && !inTestRunner
-  ? MongoStore.create({ mongoUrl: MONGODB_URI, collectionName: SESSION_COLLECTION_NAME })
-  : undefined;
 
 const adminUsernameInput = z.string().trim().min(1).max(32).regex(/^[a-zA-Z0-9_-]+$/);
 const optionalText = (max) => z.string().trim().max(max).optional().default("");
@@ -176,7 +172,9 @@ app.use(session({
   // Em produção (inclusive no Vercel, onde cada invocação pode cair em outra
   // instância) as sessões precisam ficar no MongoDB para o login do painel
   // sobreviver entre requisições. Nos testes usamos o store em memória.
-  store: sessionStore,
+  store: MONGODB_URI && !inTestRunner
+    ? MongoStore.create({ mongoUrl: MONGODB_URI, collectionName: "sessions" })
+    : undefined,
   cookie: {
     httpOnly: true,
     sameSite: "strict",
@@ -188,7 +186,6 @@ app.get("/", (request, response) => response.sendFile(path.join(PUBLIC_DIR, "ind
 app.get(["/admin", "/admin/"], (request, response) => response.sendFile(path.join(PUBLIC_DIR, "admin", "index.html")));
 app.use("/css", express.static(path.join(PUBLIC_DIR, "css"), { dotfiles: "deny" }));
 app.use("/Js", express.static(path.join(PUBLIC_DIR, "Js"), { dotfiles: "deny" }));
-app.use("/media", express.static(path.join(PUBLIC_DIR, "media"), { dotfiles: "deny" }));
 for (const page of ["termos", "privacidade", "cookies"]) {
   app.get(`/${page}`, (request, response) => response.sendFile(path.join(PUBLIC_DIR, "legal", `${page}.html`)));
 }
@@ -372,16 +369,10 @@ function dbReady(request, response, next) {
 
 app.use("/api", dbReady);
 
-app.get("/api/csrf", asyncRoute(async (request, response) => {
+app.get("/api/csrf", (request, response) => {
   if (!request.session.csrfToken) request.session.csrfToken = crypto.randomBytes(32).toString("hex");
-  await new Promise((resolve, reject) => request.session.save((error) => error ? reject(error) : resolve()));
-  try {
-    await pruneStoredSessions(undefined, MAX_STORED_SESSIONS, request.sessionID);
-  } catch (error) {
-    console.error("Não foi possível limpar sessões antigas:", error.message);
-  }
   response.json({ token: request.session.csrfToken });
-}));
+});
 
 app.post("/api/admin/login", loginLimiter, requireSameOrigin, asyncRoute(async (request, response) => {
   const username = adminUsernameInput.safeParse(request.body.username);
@@ -397,12 +388,6 @@ app.post("/api/admin/login", loginLimiter, requireSameOrigin, asyncRoute(async (
   request.session.adminId = admin.id;
   request.session.adminName = admin.username;
   request.session.csrfToken = crypto.randomBytes(32).toString("hex");
-  await new Promise((resolve, reject) => request.session.save((error) => error ? reject(error) : resolve()));
-  try {
-    await pruneStoredSessions(undefined, MAX_STORED_SESSIONS, request.sessionID);
-  } catch (error) {
-    console.error("Não foi possível limpar sessões antigas:", error.message);
-  }
   return response.json({ ok: true, csrfToken: request.session.csrfToken });
 }));
 
@@ -463,7 +448,6 @@ app.get("/api/images/:id", asyncRoute(async (request, response) => {
 
 const CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 const MAX_STORED_ORDERS = 50;
-const MAX_STORED_SESSIONS = 10;
 const codeInput = z.string().trim().toUpperCase().regex(/^HB-[A-Z0-9]{4}-[A-Z0-9]{4}$/);
 const orderInput = z.object({
   customerName: z.string().trim().max(80).optional().default(""),
@@ -483,27 +467,6 @@ const orderLimiter = rateLimit({
 function generateOrderCode() {
   const pick = () => Array.from({ length: 4 }, () => CODE_ALPHABET[crypto.randomInt(CODE_ALPHABET.length)]).join("");
   return `HB-${pick()}-${pick()}`;
-}
-
-function getSessionCollection(db = mongoose.connection.db, collectionName = SESSION_COLLECTION_NAME) {
-  if (!db) throw new Error("Banco de sessões indisponível.");
-  return db.collection(collectionName);
-}
-
-async function pruneStoredSessions(sessionCollection = getSessionCollection(), maxSessions = MAX_STORED_SESSIONS, keepSessionId = "") {
-  const total = await sessionCollection.countDocuments();
-  if (total <= maxSessions) return 0;
-
-  const query = keepSessionId ? { _id: { $ne: keepSessionId } } : {};
-  const staleSessions = await sessionCollection.find(query, { projection: { _id: 1 } })
-    .sort({ expires: 1, _id: 1 })
-    .limit(total - maxSessions)
-    .toArray();
-
-  if (!staleSessions.length) return 0;
-  const ids = staleSessions.map((sessionDoc) => sessionDoc._id);
-  const removed = await sessionCollection.deleteMany({ _id: { $in: ids } });
-  return removed.deletedCount || 0;
 }
 
 async function pruneStoredOrders(OrderModel = Order, maxOrders = MAX_STORED_ORDERS) {
@@ -964,6 +927,5 @@ Object.assign(module.exports, {
   orderInput,
   codeInput,
   generateOrderCode,
-  pruneStoredSessions,
   pruneStoredOrders,
 });
